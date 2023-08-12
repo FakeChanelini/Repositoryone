@@ -1,44 +1,42 @@
+const holes = document.querySelectorAll('.hole')
+const scoreBoard = document.querySelector('.score')
 const moles = document.querySelectorAll('.mole')
-const game = document.querySelector('.game')
+let lastHole
+let timeUp = false
 let score = 0
-let gameOver = false
-let lastMole
-
 function randomTime(min, max) {
   return Math.round(Math.random() * (max - min) + min)
 }
-
-function randomMole(moles) {
-  const index = Math.floor(Math.random() * moles.length)
-  const mole = moles[index]
-  if (mole === lastMole) {
-    return randomMole(moles)
+function randomHole(holes) {
+  const idx = Math.floor(Math.random() * holes.length)
+  const hole = holes[idx]
+  if (hole === lastHole) {
+    return randomHole(holes)
   }
-  lastMole = mole
-  return mole
+  lastHole = hole
+  return hole
 }
-
-function showMole() {
-  const time = randomTime(500, 1000)
-  const mole = randomMole(moles)
-  mole.classList.add('up')
+function peep() {
+  const time = randomTime(200, 1000)
+  const hole = randomHole(holes)
+  hole.classList.add('up')
   setTimeout(() => {
-    mole.classList.remove('up')
-    if (!gameOver) showMole()
+    hole.classList.remove('up')
+    if (!timeUp) peep()
   }, time)
 }
-
 function startGame() {
+  scoreBoard.textContent = 0
+  timeUp = false
   score = 0
-  gameOver = false
-  showMole()
-  setTimeout(() => (gameOver = true), 10000)
+  peep()
+  setTimeout(() => (timeUp = true), 10000)
 }
-
 function whack(e) {
+  if (!e.isTrusted) return
   score++
-  document.querySelector('#score').textContent = score
+  this.parentNode.classList.remove('up')
+  scoreBoard.textContent = score
+  document.querySelector('#whack-sound').play()
 }
-
 moles.forEach((mole) => mole.addEventListener('click', whack))
-document.querySelector('#start').addEventListener('click', startGame)
