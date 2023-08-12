@@ -1,0 +1,14 @@
+.game {
+  width: 600px;
+  height: 400px;
+  margin: 0 auto;
+  position: relative;
+}
+.mole {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  bottom: 0;
+  background-image: url('mole.png');
+  background-size: contain;
+}
